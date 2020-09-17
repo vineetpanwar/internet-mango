@@ -27,7 +27,7 @@ class List extends PureComponent {
   static fetchData({ store }) {
     return store.dispatch(getProductList())
   }
-
+  
   // Runs on client only
   componentDidMount() {
     this.props.getProductList()
@@ -67,8 +67,12 @@ class List extends PureComponent {
               this.props.messageHide()
             }, 5000)
           })
+        }
       }
     }
+    
+    isAdmin = () => {
+      return JSON.parse(window.localStorage.getItem('user'))['role'] === "ADMIN"
   }
 
   render() {
@@ -108,7 +112,9 @@ class List extends PureComponent {
                     <th>Description</th>
                     <th>Created at</th>
                     <th>Updated at</th>
+                    {this.isAdmin() && 
                     <th style={{ textAlign: 'center' }}>Actions</th>
+                    }
                   </tr>
                 </thead>
 
@@ -143,7 +149,7 @@ class List extends PureComponent {
                               { new Date(parseInt(updatedAt)).toDateString() }
                             </td>
 
-                            <td style={{ textAlign: 'center' }}>
+                            {this.isAdmin() && (<td style={{ textAlign: 'center' }}>
                               <Link to={admin.productEdit.path(id)}>
                                 <Icon size={2} style={{ color: black }}>mode_edit</Icon>
                               </Link>
@@ -151,7 +157,8 @@ class List extends PureComponent {
                               <span style={{ cursor: 'pointer' }} onClick={this.remove.bind(this, id)}>
                                   <Icon size={2} style={{ marginLeft: '0.5em' }}>delete</Icon>
                                 </span>
-                            </td>
+                            </td>)
+                            }
                           </tr>
                         ))
                       : <tr>
